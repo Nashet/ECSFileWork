@@ -372,9 +372,17 @@ PrefabInstance:
       propertyPath: currencyId
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2020691166407713946, guid: 179dbea1ceee35f41a16f91fd5586e57, type: 3}
+      propertyPath: currencyName
+      value: Coins
+      objectReference: {fileID: 0}
     - target: {fileID: 2189686760632289455, guid: 179dbea1ceee35f41a16f91fd5586e57, type: 3}
       propertyPath: currencyId
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2189686760632289455, guid: 179dbea1ceee35f41a16f91fd5586e57, type: 3}
+      propertyPath: currencyName
+      value: Crystals
       objectReference: {fileID: 0}
     - target: {fileID: 3227097662888777323, guid: 179dbea1ceee35f41a16f91fd5586e57, type: 3}
       propertyPath: m_Name
