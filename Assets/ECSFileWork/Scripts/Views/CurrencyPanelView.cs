@@ -11,11 +11,22 @@ namespace Nashet.ECSFileWork.Views
 		[SerializeField] private TMPro.TextMeshProUGUI currencyText;
 		[SerializeField] private TMPro.TextMeshProUGUI currencyAmount;
 
-		public event ButtonClickedDelegate OnCurrenceIncreaseClicked;
+		public event ButtonClickedDelegate OnCurrencyIncreaseClicked;
 		public event ButtonClickedDelegate OnCurrnecySetZeroClicked;
+
+		public void SetCurrencyText(string text)
+		{
+			currencyText.text = text;
+		}
+
+		public void SetCurrencyAmount(string amount)
+		{
+			currencyAmount.text = amount;
+		}
+
 		public void OnCurrenceIncreaseClickedHandler()
 		{
-			OnCurrenceIncreaseClicked?.Invoke();
+			OnCurrencyIncreaseClicked?.Invoke();
 		}
 
 		public void OnCurrnecySetZeroClickedHandler()
