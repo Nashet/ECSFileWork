@@ -1,6 +1,5 @@
 using Nashet.ECSFileWork.ECS;
 using Nashet.ECSFileWork.Views;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
@@ -30,9 +29,9 @@ namespace Nashet.ECSFileWork.Controllers
 
 			entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
-			Entity entity = entityManager.CreateEntity(typeof(Wallet));
+			Entity entity = entityManager.CreateEntity(typeof(WalletComponent));
 
-			var myComponent = entityManager.GetComponentData<Wallet>(entity);
+			var myComponent = entityManager.GetComponentData<WalletComponent>(entity);
 
 			myComponent.currencyId = currencyId;
 			myComponent.amount = defaultvalue;
@@ -50,7 +49,7 @@ namespace Nashet.ECSFileWork.Controllers
 			// Modify the desired component value
 			if (foundEntity != Entity.Null)
 			{
-				var myComponent = entityManager.GetComponentData<Wallet>(foundEntity);
+				var myComponent = entityManager.GetComponentData<WalletComponent>(foundEntity);
 				myComponent.amount = 0;
 				entityManager.SetComponentData(foundEntity, myComponent);
 			}
@@ -63,7 +62,7 @@ namespace Nashet.ECSFileWork.Controllers
 			// Modify the desired component value
 			if (foundEntity != Entity.Null)
 			{
-				var myComponent = entityManager.GetComponentData<Wallet>(foundEntity);
+				var myComponent = entityManager.GetComponentData<WalletComponent>(foundEntity);
 				myComponent.amount++;
 				entityManager.SetComponentData(foundEntity, myComponent);
 			}
@@ -73,7 +72,7 @@ namespace Nashet.ECSFileWork.Controllers
 		{
 			// Query the entity with the desired field value
 			EntityQuery query = entityManager.CreateEntityQuery(
-				ComponentType.ReadOnly<Wallet>()
+				ComponentType.ReadOnly<WalletComponent>()
 			);
 
 			NativeArray<Entity> entities = query.ToEntityArray(Allocator.TempJob);
@@ -82,7 +81,7 @@ namespace Nashet.ECSFileWork.Controllers
 			for (int i = 0; i < entities.Length; i++)
 			{
 				Entity entity = entities[i];
-				var myComponent = entityManager.GetComponentData<Wallet>(entity);
+				var myComponent = entityManager.GetComponentData<WalletComponent>(entity); //todo fix that
 
 				if (myComponent.currencyId == currencyId)
 				{

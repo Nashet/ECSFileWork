@@ -2,7 +2,7 @@
 
 namespace Nashet.ECSFileWork.ECS
 {
-	public struct SaveFlag : IComponentData
+	public struct SaveFlagComponent : IComponentData
 	{
 	}
 }

@@ -29,7 +29,7 @@ namespace Nashet.ECSFileWork.Controllers
 		{
 			// Query the entity with the desired field value
 			EntityQuery query = entityManager.CreateEntityQuery(
-				ComponentType.ReadOnly<Wallet>()
+				ComponentType.ReadOnly<WalletComponent>()
 			);
 
 			NativeArray<Entity> entities = query.ToEntityArray(Allocator.TempJob);
@@ -38,7 +38,7 @@ namespace Nashet.ECSFileWork.Controllers
 			for (int i = 0; i < entities.Length; i++)
 			{
 				Entity entity = entities[i];
-				entityManager.AddComponentData(entity, new SaveFlag());
+				entityManager.AddComponentData(entity, new SaveFlagComponent());
 			}
 		}
 	}
