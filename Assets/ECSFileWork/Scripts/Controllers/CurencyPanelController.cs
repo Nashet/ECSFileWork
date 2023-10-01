@@ -1,5 +1,6 @@
 using Nashet.ECSFileWork.ECS;
 using Nashet.ECSFileWork.Views;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
@@ -15,47 +16,58 @@ namespace Nashet.ECSFileWork.Controllers
 		[SerializeField] private CurrencyPanelView curencyPanelView; //todo it might be good to use interface here
 		[SerializeField] private string currencyName;
 		[SerializeField] private int currencyId;
+		[SerializeField] private DotsEventsController dotsEventsController;
 
 		public event CurrencyAmountChangedDelegate OnCurrencyAmountChanged; //todo rise it. Or not?
 
 		private EntityManager entityManager;
+		private int currentValue = 0;
 
 		// Start is called before the first frame update
 		void Start()
 		{
-			var defaultvalue = 0;
-			curencyPanelView.SetCurrencyText($"{currencyName}:");
-			curencyPanelView.SetCurrencyAmount(defaultvalue.ToString());
-
 			entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+			RegisterUsedCurrencyId();
 
-			Entity entity = entityManager.CreateEntity(typeof(WalletComponent));
-
-			var myComponent = entityManager.GetComponentData<WalletComponent>(entity);
-
-			myComponent.currencyId = currencyId;
-			myComponent.amount = defaultvalue;
-
-			entityManager.SetComponentData(entity, myComponent);
+			curencyPanelView.SetCurrencyText($"{currencyName}:");
 
 			curencyPanelView.OnCurrencyIncreaseClicked += CurrencyIncreaseClickedHandler;
 			curencyPanelView.OnCurrnecySetZeroClicked += CurrencySetZeroClickedHandler;
+			dotsEventsController.OnDataLoaded += DataLoadedHandler;
+		} //todo add OnDestroy
+
+		private void RegisterUsedCurrencyId()
+		{
+			Entity entity = entityManager.CreateEntity(typeof(WalletComponent));
+			var myComponent = entityManager.GetComponentData<WalletComponent>(entity);
+			myComponent.currencyId = currencyId;
+			entityManager.SetComponentData(entity, myComponent);
+		}
+
+		private void DataLoadedHandler()
+		{
+			var foundEntity = FoundWalletEntityById();
+			
+			if (foundEntity != Entity.Null)
+			{
+				var myComponent = entityManager.GetComponentData<WalletComponent>(foundEntity);
+
+				curencyPanelView.SetCurrencyAmount(myComponent.amount.ToString());
+				currentValue = myComponent.amount;
+			}
 		}
 
 		private void CurrencySetZeroClickedHandler()
 		{
-			var foundEntity = FoundWalletEntityById();
-
-			// Modify the desired component value
-			if (foundEntity != Entity.Null)
-			{
-				var myComponent = entityManager.GetComponentData<WalletComponent>(foundEntity);
-				myComponent.amount = 0;
-				entityManager.SetComponentData(foundEntity, myComponent);
-			}
+			SetValueInModel(0);
 		}
 
 		private void CurrencyIncreaseClickedHandler()
+		{
+			SetValueInModel(currentValue + 1);
+		}
+
+		private void SetValueInModel(int value)
 		{
 			var foundEntity = FoundWalletEntityById();
 
@@ -63,8 +75,9 @@ namespace Nashet.ECSFileWork.Controllers
 			if (foundEntity != Entity.Null)
 			{
 				var myComponent = entityManager.GetComponentData<WalletComponent>(foundEntity);
-				myComponent.amount++;
+				myComponent.amount = value;
 				entityManager.SetComponentData(foundEntity, myComponent);
+				DotsEventsController.Instance.RiseOnDataLoaded();
 			}
 		}
 
