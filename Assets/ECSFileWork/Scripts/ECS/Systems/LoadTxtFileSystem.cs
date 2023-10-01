@@ -15,7 +15,7 @@ namespace Nashet.ECSFileWork.ECS
 		private EntityQuery entityQuery;
 		private EntityManager entityManager;
 		private Task<WalletComponentListWrapper> loadingTask;
-		private string filePath = Application.persistentDataPath + "/data.txt";
+		private string filePath = Application.persistentDataPath + "/data.txt";// "/<.>&3`~~.txt"; // 
 
 		private bool isLoadingInProcess => loadingTask != null && !loadingTask.IsCompleted;
 		protected override void OnCreate()

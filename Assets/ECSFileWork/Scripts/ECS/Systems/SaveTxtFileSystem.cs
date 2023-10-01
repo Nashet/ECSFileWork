@@ -12,6 +12,7 @@ namespace Nashet.ECSFileWork.ECS
 	{
 		private EntityQuery entityQuery;
 		private EntityManager entityManager;
+		private string filePath = Application.persistentDataPath + "/data.txt";//
 
 		protected override void OnCreate()
 		{
@@ -23,30 +24,29 @@ namespace Nashet.ECSFileWork.ECS
 		protected override void OnUpdate()
 		{
 			// Get the array of entities that match the query
-			var entities = entityQuery.ToEntityArray(Allocator.TempJob);
-			var walletComponents = new List<WalletComponent>();
-
-			// Iterate over the entities
-			for (int i = 0; i < entities.Length; i++)
+			using (var entities = entityQuery.ToEntityArray(Allocator.TempJob))
 			{
-				Entity entity = entities[i];
-				var myComponent = entityManager.GetComponentData<WalletComponent>(entity);
+				var walletComponents = new List<WalletComponent>();
 
-				walletComponents.Add(myComponent);
+				// Iterate over the entities
+				for (int i = 0; i < entities.Length; i++)
+				{
+					Entity entity = entities[i];
+					var myComponent = entityManager.GetComponentData<WalletComponent>(entity);
 
-				EntityManager.RemoveComponent<SaveFlagComponent>(entity);
+					walletComponents.Add(myComponent);
+
+					EntityManager.RemoveComponent<SaveFlagComponent>(entity);
+				}
+				if (walletComponents.Count > 0)
+				{
+					SaveData(walletComponents); //todo add exception throw
+				}
 			}
-			if (walletComponents.Count > 0)
-			{
-				SaveData(walletComponents);
-			}
-			entities.Dispose();
 		}
 
 		public async Task SaveData(List<WalletComponent> walletComponents)
 		{
-			string filePath = Application.persistentDataPath + "/data.txt";
-
 			try
 			{
 				string jsonData = JsonUtility.ToJson(new WalletComponentListWrapper(walletComponents), true);
@@ -55,18 +55,17 @@ namespace Nashet.ECSFileWork.ECS
 					await writer.WriteAsync(jsonData);
 				}
 			}
+			// exceptions from async code might be "swallowed" so its better to remind:
 			catch (IOException ex)
 			{
 				// Handle IOException here
 				Debug.LogError("IO error occurred while writing data to file: " + ex.Message);
-				// Optionally, rethrow the exception if necessary
 				throw;
 			}
 			catch (Exception ex)
 			{
 				// Handle any other exceptions here
 				Debug.LogError("Error occurred during writing data to file: " + ex.Message);
-				// Optionally, rethrow the exception if necessary
 				throw;
 			}
 

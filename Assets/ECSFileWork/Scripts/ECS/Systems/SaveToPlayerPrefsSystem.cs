@@ -21,20 +21,21 @@ namespace Nashet.ECSFileWork.ECS
 		protected override void OnUpdate()
 		{
 			// Get the array of entities that match the query
-			var entities = entityQuery.ToEntityArray(Allocator.TempJob);
-			var walletComponents = new List<WalletComponent>();
-			// Iterate over the entities
-			for (int i = 0; i < entities.Length; i++)
+			using (var entities = entityQuery.ToEntityArray(Allocator.TempJob))
 			{
-				Entity entity = entities[i];
-				var myComponent = entityManager.GetComponentData<WalletComponent>(entity);
+				var walletComponents = new List<WalletComponent>();
+				// Iterate over the entities
+				for (int i = 0; i < entities.Length; i++)
+				{
+					Entity entity = entities[i];
+					var myComponent = entityManager.GetComponentData<WalletComponent>(entity);
 
-				walletComponents.Add(myComponent);  //TODO Research for a way to get all components at once
+					walletComponents.Add(myComponent);  //TODO Research for a way to get all components at once
 
-				EntityManager.RemoveComponent<SaveFlagComponent>(entity);
+					EntityManager.RemoveComponent<SaveFlagComponent>(entity);
+				}
+				SaveData(walletComponents);
 			}
-			SaveData(walletComponents);
-			entities.Dispose();
 		}
 
 		public void SaveData(List<WalletComponent> walletComponents)

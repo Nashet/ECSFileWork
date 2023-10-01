@@ -14,6 +14,7 @@ namespace Nashet.ECSFileWork.Controllers
 		[SerializeField] private SaveLoadPanelView saveLoadPanelView;
 		private EntityManager entityManager;
 		private List<List<SystemBase>> availableSaveLoadSystems = new();
+		private const string checkLaunchKey = "wasAppLaunched";
 
 		private IEnumerator Start()
 		{
@@ -27,9 +28,21 @@ namespace Nashet.ECSFileWork.Controllers
 			saveLoadPanelView.OnDropdownValueChanged += DropdownValueChangedHandler;
 			EnableRightSystem(1);
 
+
 			yield return new WaitForSeconds(0.5f); // Delay is neded for other systems to set up. In real task it should be done in a right way
 
-			LoadData();
+			var wasAppLaunched = PlayerPrefs.GetInt(checkLaunchKey);
+			if (wasAppLaunched == 0)
+			{
+				Debug.Log("Creating default sava file..");
+				SaveData(); //creates default record				
+				PlayerPrefs.SetInt(checkLaunchKey, 1);
+				PlayerPrefs.Save();
+			}
+			else
+			{
+				LoadData();
+			}
 		}
 
 		private void SetAvailableFileSystems(World world)
@@ -79,6 +92,11 @@ namespace Nashet.ECSFileWork.Controllers
 		}
 
 		private void SaveClickedHandler()
+		{
+			SaveData();
+		}
+
+		private void SaveData()
 		{
 			AddComponent(new SaveFlagComponent()); //in real task you probably will load all data at once
 		}

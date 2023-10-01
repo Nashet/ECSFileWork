@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace Nashet.ECSFileWork.Views
@@ -8,8 +9,8 @@ namespace Nashet.ECSFileWork.Views
 
 	public class CurrencyPanelView : MonoBehaviour
 	{
-		[SerializeField] private TMPro.TextMeshProUGUI currencyText;
-		[SerializeField] private TMPro.TextMeshProUGUI currencyAmount;
+		[SerializeField] private TextMeshProUGUI currencyText;
+		[SerializeField] private TextMeshProUGUI currencyAmount;
 
 		public event ButtonClickedDelegate OnCurrencyIncreaseClicked;
 		public event ButtonClickedDelegate OnCurrnecySetZeroClicked;
