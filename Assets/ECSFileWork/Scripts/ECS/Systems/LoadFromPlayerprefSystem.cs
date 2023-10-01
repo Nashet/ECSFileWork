@@ -39,7 +39,7 @@ namespace Nashet.ECSFileWork.ECS
 				}
 				catch (Exception e)
 				{
-					Debug.LogError($"Error setting PlayerPrefs key {key}: {e.Message}");
+					Debug.LogError($"Error loading PlayerPrefs key {key}: {e.Message}");
 				}
 
 				loadedCounter++;

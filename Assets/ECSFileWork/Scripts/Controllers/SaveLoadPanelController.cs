@@ -7,21 +7,64 @@ using Unity.Entities;
 namespace Nashet.ECSFileWork.Controllers
 {
 	using System.Collections;
+	using System.Collections.Generic;
 	using UnityEngine;
+
 	public class SaveLoadPanelController : MonoBehaviour
 	{
 		[SerializeField] private SaveLoadPanelView saveLoadPanelView;
 		private EntityManager entityManager;
+		private List<List<SystemBase>> availableSaveLoadSystems = new();
 
 		private IEnumerator Start()
 		{
-			entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+			var world = World.DefaultGameObjectInjectionWorld;
+			entityManager = world.EntityManager;
+
+			SetAvailableFileSystems(world);
+
 			saveLoadPanelView.OnSaveClicked += SaveClickedHandler;
 			saveLoadPanelView.OnLoadClicked += LoadClickedHandler;
+			saveLoadPanelView.OnDropdownValueChanged += DropdownValueChangedHandler;
+			EnableRightSystem(0);
 
 			yield return new WaitForSeconds(0.5f); // Delay is neded for other systems to set up. In real task it should be done in a right way
 
 			LoadData();
+		}
+
+		private void SetAvailableFileSystems(World world)
+		{
+			var playerPrefsSystems = new List<SystemBase> {
+				world.GetExistingSystemManaged<SaveToPlayerPrefsSystem>(),
+				world.GetExistingSystemManaged<LoadFromPlayerprefSystem>(),
+			};
+
+			availableSaveLoadSystems.Add(playerPrefsSystems);
+
+			var txtFileSystem = new List<SystemBase>
+			{
+				world.GetExistingSystemManaged<SaveTxtFileSystem>(),
+			};
+
+			availableSaveLoadSystems.Add(txtFileSystem);
+		}
+
+		private void DropdownValueChangedHandler(int value)
+		{
+			EnableRightSystem(value);
+		}
+
+		private void EnableRightSystem(int choosedSystem)
+		{
+			for (int i = 0; i < availableSaveLoadSystems.Count; i++)
+			{
+				List<SystemBase> set = availableSaveLoadSystems[i];
+				foreach (var system in set)
+				{
+					system.Enabled = i == choosedSystem;
+				}
+			}
 		}
 
 		private void LoadClickedHandler()

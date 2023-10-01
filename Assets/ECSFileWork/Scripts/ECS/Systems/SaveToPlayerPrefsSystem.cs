@@ -39,30 +39,24 @@ namespace Nashet.ECSFileWork.ECS
 
 		public void SaveData(List<WalletComponent> walletComponents)
 		{
-			foreach (var wallet in walletComponents)
-			{
-				var key = "Currency" + wallet.currencyId;
-				try
-				{
-					PlayerPrefs.SetInt(key, wallet.amount);
-				}
-				catch (Exception e)
-				{
-					Debug.LogError($"Error setting PlayerPrefs key {key}: {e.Message}");
-				}
-			}
 			try
 			{
-				PlayerPrefs.Save();
+				foreach (var wallet in walletComponents)
+				{
+					var key = "Currency" + wallet.currencyId;
+
+					PlayerPrefs.SetInt(key, wallet.amount);
+				}
+
+				if (walletComponents.Count != 0)
+				{
+					PlayerPrefs.Save();
+					Debug.Log($"Finished saving data in PlayerPrefs");
+				}
 			}
 			catch (Exception e)
 			{
 				Debug.LogError($"Error setting PlayerPrefs key: {e.Message}");
-			}
-
-			if (walletComponents.Count != 0)
-			{
-				Debug.Log($"Finished saving data in PlayerPrefs");
 			}
 		}
 	}
