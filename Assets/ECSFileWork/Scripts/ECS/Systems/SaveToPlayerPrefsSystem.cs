@@ -57,6 +57,7 @@ namespace Nashet.ECSFileWork.ECS
 			catch (Exception e)
 			{
 				Debug.LogError($"Error setting PlayerPrefs key: {e.Message}");
+				throw;
 			}
 		}
 	}

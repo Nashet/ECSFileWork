@@ -40,6 +40,7 @@ namespace Nashet.ECSFileWork.ECS
 				catch (Exception e)
 				{
 					Debug.LogError($"Error loading PlayerPrefs key {key}: {e.Message}");
+					throw;
 				}
 
 				loadedCounter++;

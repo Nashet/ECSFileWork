@@ -47,7 +47,7 @@ namespace Nashet.ECSFileWork.Controllers
 		private void DataLoadedHandler()
 		{
 			var foundEntity = FoundWalletEntityById();
-			
+
 			if (foundEntity != Entity.Null)
 			{
 				var myComponent = entityManager.GetComponentData<WalletComponent>(foundEntity);

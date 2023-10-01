@@ -1,15 +1,14 @@
 ﻿using Nashet.ECSFileWork.ECS;
 using Nashet.ECSFileWork.Views;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
+using UnityEngine;
 
 namespace Nashet.ECSFileWork.Controllers
 {
-	using System.Collections;
-	using System.Collections.Generic;
-	using UnityEngine;
-
 	public class SaveLoadPanelController : MonoBehaviour
 	{
 		[SerializeField] private SaveLoadPanelView saveLoadPanelView;
@@ -26,7 +25,7 @@ namespace Nashet.ECSFileWork.Controllers
 			saveLoadPanelView.OnSaveClicked += SaveClickedHandler;
 			saveLoadPanelView.OnLoadClicked += LoadClickedHandler;
 			saveLoadPanelView.OnDropdownValueChanged += DropdownValueChangedHandler;
-			EnableRightSystem(0);
+			EnableRightSystem(1);
 
 			yield return new WaitForSeconds(0.5f); // Delay is neded for other systems to set up. In real task it should be done in a right way
 
@@ -45,6 +44,7 @@ namespace Nashet.ECSFileWork.Controllers
 			var txtFileSystem = new List<SystemBase>
 			{
 				world.GetExistingSystemManaged<SaveTxtFileSystem>(),
+				world.GetExistingSystemManaged<LoadTxtFileSystem>(),
 			};
 
 			availableSaveLoadSystems.Add(txtFileSystem);
