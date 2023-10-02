@@ -1,8 +1,5 @@
 using Nashet.ECSFileWork.ECS;
 using Nashet.ECSFileWork.Views;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
@@ -18,8 +15,6 @@ namespace Nashet.ECSFileWork.Controllers
 		[SerializeField] private int currencyId;
 		[SerializeField] private DotsEventsController dotsEventsController;
 
-		public event CurrencyAmountChangedDelegate OnCurrencyAmountChanged; //todo rise it. Or not?
-
 		private EntityManager entityManager;
 		private int currentValue = 0;
 
@@ -34,7 +29,14 @@ namespace Nashet.ECSFileWork.Controllers
 			curencyPanelView.OnCurrencyIncreaseClicked += CurrencyIncreaseClickedHandler;
 			curencyPanelView.OnCurrnecySetZeroClicked += CurrencySetZeroClickedHandler;
 			dotsEventsController.OnDataLoaded += DataLoadedHandler;
-		} //todo add OnDestroy
+		}
+
+		private void OnDestroy()
+		{
+			curencyPanelView.OnCurrencyIncreaseClicked -= CurrencyIncreaseClickedHandler;
+			curencyPanelView.OnCurrnecySetZeroClicked -= CurrencySetZeroClickedHandler;
+			dotsEventsController.OnDataLoaded -= DataLoadedHandler;
+		}
 
 		private void RegisterUsedCurrencyId()
 		{
@@ -81,29 +83,28 @@ namespace Nashet.ECSFileWork.Controllers
 			}
 		}
 
-		private Entity FoundWalletEntityById()
+		private Entity FoundWalletEntityById() //todo for better performance add WalletComponent as return type
 		{
 			// Query the entity with the desired field value
-			EntityQuery query = entityManager.CreateEntityQuery(
-				ComponentType.ReadOnly<WalletComponent>()
+			EntityQuery query = entityManager.CreateEntityQuery(ComponentType.ReadOnly<WalletComponent>()
 			);
 
-			NativeArray<Entity> entities = query.ToEntityArray(Allocator.TempJob);
 			Entity foundEntity = Entity.Null;
-
-			for (int i = 0; i < entities.Length; i++)
+			using (var entities = query.ToEntityArray(Allocator.TempJob))
 			{
-				Entity entity = entities[i];
-				var myComponent = entityManager.GetComponentData<WalletComponent>(entity); //todo fix that
-
-				if (myComponent.currencyId == currencyId)
+				for (int i = 0; i < entities.Length; i++)
 				{
-					foundEntity = entity;
-					break;
+					Entity entity = entities[i];
+					var wallet = entityManager.GetComponentData<WalletComponent>(entity);
+
+					if (wallet.currencyId == currencyId)
+					{
+						foundEntity = entity;
+						break;
+					}
 				}
 			}
 
-			entities.Dispose();
 			return foundEntity;
 		}
 	}

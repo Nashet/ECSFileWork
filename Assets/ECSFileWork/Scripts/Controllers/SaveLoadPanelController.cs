@@ -1,6 +1,5 @@
 ﻿using Nashet.ECSFileWork.ECS;
 using Nashet.ECSFileWork.Views;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
@@ -26,7 +25,7 @@ namespace Nashet.ECSFileWork.Controllers
 			saveLoadPanelView.OnSaveClicked += SaveClickedHandler;
 			saveLoadPanelView.OnLoadClicked += LoadClickedHandler;
 			saveLoadPanelView.OnDropdownValueChanged += DropdownValueChangedHandler;
-			EnableRightSystem(1);
+			EnableRightSystem(0);
 
 
 			yield return new WaitForSeconds(0.5f); // Delay is neded for other systems to set up. In real task it should be done in a right way
@@ -43,6 +42,13 @@ namespace Nashet.ECSFileWork.Controllers
 			{
 				LoadData();
 			}
+		}
+
+		private void OnDestroy()
+		{
+			saveLoadPanelView.OnSaveClicked -= SaveClickedHandler;
+			saveLoadPanelView.OnLoadClicked -= LoadClickedHandler;
+			saveLoadPanelView.OnDropdownValueChanged -= DropdownValueChangedHandler;
 		}
 
 		private void SetAvailableFileSystems(World world)
@@ -108,11 +114,13 @@ namespace Nashet.ECSFileWork.Controllers
 				ComponentType.ReadOnly<WalletComponent>()
 			);
 
-			NativeArray<Entity> entities = query.ToEntityArray(Allocator.TempJob);
-			for (int i = 0; i < entities.Length; i++)
+			using (var entities = query.ToEntityArray(Allocator.TempJob))
 			{
-				Entity entity = entities[i];
-				entityManager.AddComponentData(entity, componentData);
+				for (int i = 0; i < entities.Length; i++)
+				{
+					Entity entity = entities[i];
+					entityManager.AddComponentData(entity, componentData);
+				}
 			}
 		}
 	}

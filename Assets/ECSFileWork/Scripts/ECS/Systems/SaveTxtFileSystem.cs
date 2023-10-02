@@ -40,7 +40,7 @@ namespace Nashet.ECSFileWork.ECS
 				}
 				if (walletComponents.Count > 0)
 				{
-					SaveData(walletComponents); //todo add exception throw
+					SaveData(walletComponents); //todo add taskhandler so you can handle exception from async code
 				}
 			}
 		}

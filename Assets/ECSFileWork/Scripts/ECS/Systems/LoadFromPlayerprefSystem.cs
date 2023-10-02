@@ -1,9 +1,8 @@
+using Nashet.ECSFileWork.Controllers;
 using System;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
-using System.Collections.Generic;
-using Nashet.ECSFileWork.Controllers;
 
 namespace Nashet.ECSFileWork.ECS
 {
@@ -31,11 +30,11 @@ namespace Nashet.ECSFileWork.ECS
 					Entity entity = entities[i];
 					var wallet = entityManager.GetComponentData<WalletComponent>(entity);
 
-					var key = "Currency" + wallet.currencyId;//todo improve key
+					var key = "Currency" + wallet.currencyId;
 					try
 					{
-						wallet.amount = PlayerPrefs.GetInt(key); //todo that break data locality
-																 // Write the updated value back to the component
+						wallet.amount = PlayerPrefs.GetInt(key); //todo that might break data locality
+
 						entityManager.SetComponentData(entity, wallet);
 					}
 					catch (Exception e)

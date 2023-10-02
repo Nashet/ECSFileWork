@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Nashet.ECSFileWork.Controllers
+﻿namespace Nashet.ECSFileWork.Controllers
 {
 	public delegate void DataLoadedDelegate();
 	public class DotsEventsController : MonoSingleton<DotsEventsController>
