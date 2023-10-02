@@ -33,8 +33,8 @@ namespace Nashet.ECSFileWork.Controllers
 			var wasAppLaunched = PlayerPrefs.GetInt(checkLaunchKey);
 			if (wasAppLaunched == 0)
 			{
-				Debug.Log("Creating default sava file..");
-				SaveData(); //creates default record				
+				Debug.Log("Creating default empty save file..");
+				SaveData(); //creates default record
 				PlayerPrefs.SetInt(checkLaunchKey, 1);
 				PlayerPrefs.Save();
 			}

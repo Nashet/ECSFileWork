@@ -1,5 +1,6 @@
 ﻿using Nashet.ECSFileWork.Controllers;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -54,8 +55,15 @@ namespace Nashet.ECSFileWork.ECS
 				{
 					Entity entity = entities[i];
 					var wallet = entityManager.GetComponentData<WalletComponent>(entity);
-					wallet.amount = loadedData[wallet.currencyId].amount; //todo it is expected to rise exception if there is no that key
-
+					try
+					{
+						wallet.amount = loadedData[wallet.currencyId].amount;
+					}
+					catch (KeyNotFoundException)
+					{
+						RemoveLoadingFlag(entities);
+						throw new Exception($"Save file doesn't have currency id {wallet.currencyId}"); // todo better add own exception type
+					}
 					// Write the updated value back to the component
 					entityManager.SetComponentData(entity, wallet);
 
